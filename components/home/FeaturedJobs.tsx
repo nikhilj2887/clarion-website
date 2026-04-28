@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { MapPin, Briefcase, Clock, DollarSign, ArrowRight, Building2 } from 'lucide-react';
+import { MapPin, Briefcase, Clock,  ArrowRight, Building2 } from 'lucide-react';
 import { supabase, type Job } from '@/lib/supabase';
 
 function JobCard({ job }: { job: Job }) {
@@ -27,7 +27,17 @@ function JobCard({ job }: { job: Job }) {
         <span className="flex items-center gap-1.5 text-xs text-slate-500"><MapPin size={12} style={{ color: '#C9A84C' }} />{job.location}</span>
         <span className="flex items-center gap-1.5 text-xs text-slate-500"><Briefcase size={12} style={{ color: '#C9A84C' }} />{job.type}</span>
         {job.experience_required && <span className="flex items-center gap-1.5 text-xs text-slate-500"><Clock size={12} style={{ color: '#C9A84C' }} />{job.experience_required}</span>}
-        {job.salary_range && <span className="flex items-center gap-1.5 text-xs text-slate-500"><DollarSign size={12} style={{ color: '#C9A84C' }} />{job.salary_range}</span>}
+        {job.salary_range && (
+  <span className="flex items-center gap-1.5 text-xs text-slate-500">
+    <span 
+      className="text-xs font-semibold"
+      style={{ color: '#C9A84C' }}
+    >
+      ₹
+    </span>
+    {job.salary_range}
+  </span>
+)}
       </div>
 
       <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 flex-grow">{job.description}</p>

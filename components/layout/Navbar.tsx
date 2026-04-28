@@ -47,7 +47,7 @@ export default function Navbar() {
             <Image
               src="/clarion.png"
               alt="Clarion Talentforge"
-              width={160}
+              width={180}
               height={60}
               className="h-9 md:h-11 w-auto object-contain"
               priority

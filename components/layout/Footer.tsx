@@ -70,8 +70,8 @@ export default function Footer() {
           <Image
             src="/clarion.png"
             alt="Clarion Talentforge"
-            width={70}
-            height={35}
+            width={180}
+            height={60}
             className="mb-5"
           />
 
