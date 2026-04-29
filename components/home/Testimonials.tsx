@@ -214,10 +214,10 @@ export default function Testimonials() {
               <div className="flex items-center gap-3">
                 {testimonials[current]?.profile_image ? (
                   <img
-                    src={testimonials[current]?.profile_image}
-                    alt={testimonials[current]?.name}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
+  src={testimonials[current].profile_image || ''}
+  alt={testimonials[current]?.name || 'testimonial'}
+  className="w-10 h-10 rounded-full object-cover"
+/>
                 ) : (
                   <div className="w-10 h-10 rounded-full"></div>
                 )}
