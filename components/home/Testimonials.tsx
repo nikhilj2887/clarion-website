@@ -25,14 +25,18 @@ export default function Testimonials() {
 
   // Auto-scroll testimonials every 4 seconds
   useEffect(() => {
-    if (testimonials.length <= 1 || isPaused) return;
+  if (testimonials.length <= 1) return;
 
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % testimonials.length);
-    }, 4000);
+  const interval = setInterval(() => {
+    setCurrent((prev) => {
+      const nextIndex = (prev + 1) % testimonials.length;
+      console.log("Auto scrolling to:", nextIndex); // debug
+      return nextIndex;
+    });
+  }, 3000);
 
-    return () => clearInterval(interval);
-  }, [testimonials.length, isPaused]);
+  return () => clearInterval(interval);
+}, [testimonials]);
 
   const fetchTestimonials = async () => {
     try {
@@ -101,11 +105,9 @@ export default function Testimonials() {
 
   return (
     <section
-      className="section-padding"
-      style={{ backgroundColor: '#050506' }}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-    >
+  className="section-padding"
+  style={{ backgroundColor: '#050506' }}
+>
       <div className="container-custom">
         {/* Header */}
         <div className="text-center mb-14">
