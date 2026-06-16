@@ -5,116 +5,119 @@ import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import GoogleAnalytics from '@/components/googleAnalytics';
 
 export const metadata: Metadata = {
-metadataBase: new URL('https://www.clariontf.com'),
+  metadataBase: new URL('https://www.clariontf.com'),
 
-title: {
-default: 'Clarion Talentforge – Accounting Training & Placement in Hyderabad',
-template: '%s | Clarion Talentforge',
-},
+  title: {
+    default: 'Clarion Talentforge – Accounting Training & Placement in Hyderabad',
+    template: '%s | Clarion Talentforge',
+  },
 
-description:
-'Clarion Talentforge LLP bridges the gap between accountants and accounting jobs in MSME markets in Hyderabad. 75+ successful placements. Almost 100% placement guaranteed.',
+  description:
+    'Clarion Talentforge LLP bridges the gap between accountants and accounting jobs in MSME markets in Hyderabad. 75+ successful placements. Almost 100% placement guaranteed.',
 
-keywords: [
-'accounting training Hyderabad',
-'accounting jobs Hyderabad',
-'MSME recruitment',
-'Tally training',
-'accounting placement',
-'Clarion Talentforge',
-'accounting course Hyderabad',
-'job placement Hyderabad',
-],
+  keywords: [
+    'accounting training Hyderabad',
+    'accounting jobs Hyderabad',
+    'MSME recruitment',
+    'Tally training',
+    'accounting placement',
+    'Clarion Talentforge',
+    'accounting course Hyderabad',
+    'job placement Hyderabad',
+  ],
 
-authors: [{ name: 'Clarion Talentforge LLP' }],
-creator: 'Clarion Talentforge LLP',
+  authors: [{ name: 'Clarion Talentforge LLP' }],
+  creator: 'Clarion Talentforge LLP',
 
-robots: {
-index: true,
-follow: true,
-},
+  robots: {
+    index: true,
+    follow: true,
+  },
 
-openGraph: {
-type: 'website',
-locale: 'en_IN',
-url: 'https://www.clariontf.com',
-siteName: 'Clarion Talentforge',
-title: 'Clarion Talentforge – Accounting Training & Placement in Hyderabad',
-description:
-'Bridging the gap between accountants and accounting jobs in MSME markets in Hyderabad.',
-images: [
-{
-url: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1200',
-width: 1200,
-height: 630,
-alt: 'Clarion Talentforge – Accounting Training & Placement',
-},
-],
-},
+  openGraph: {
+    type: 'website',
+    locale: 'en_IN',
+    url: 'https://www.clariontf.com',
+    siteName: 'Clarion Talentforge',
+    title: 'Clarion Talentforge – Accounting Training & Placement in Hyderabad',
+    description:
+      'Bridging the gap between accountants and accounting jobs in MSME markets in Hyderabad.',
+    images: [
+      {
+        url: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1200',
+        width: 1200,
+        height: 630,
+        alt: 'Clarion Talentforge – Accounting Training & Placement',
+      },
+    ],
+  },
 
-twitter: {
-card: 'summary_large_image',
-title: 'Clarion Talentforge – Accounting Training & Placement in Hyderabad',
-description:
-'Bridging the gap between accountants and accounting jobs in MSME markets in Hyderabad.',
-images: [
-'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1200',
-],
-},
+  twitter: {
+    card: 'summary_large_image',
+    title:
+      'Clarion Talentforge – Accounting Training & Placement in Hyderabad',
+    description:
+      'Bridging the gap between accountants and accounting jobs in MSME markets in Hyderabad.',
+    images: [
+      'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    ],
+  },
 
-icons: {
-icon: '/favicon.ico',
-},
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
-children,
+  children,
 }: {
-children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-return ( <html lang="en"> <head> <link rel="preconnect" href="https://fonts.googleapis.com" /> <link
-       rel="preconnect"
-       href="https://fonts.gstatic.com"
-       crossOrigin=""
-     />
+  return (
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
 
-```
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
 
-    <meta name="theme-color" content="#0C1A36" />
-  </head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
 
-  <body>
-    <GoogleAnalytics />
+        <meta name="theme-color" content="#0C1A36" />
+      </head>
 
-    {children}
+      <body>
+        <GoogleAnalytics />
 
-    <WhatsAppButton />
+        {children}
 
-    <Script
-      src="https://www.googletagmanager.com/gtag/js?id=G-HJSDMZLT70"
-      strategy="afterInteractive"
-    />
+        <WhatsAppButton />
 
-    <Script id="google-analytics" strategy="afterInteractive">
-      {`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        window.gtag = gtag;
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-HJSDMZLT70"
+          strategy="afterInteractive"
+        />
 
-        gtag('js', new Date());
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            window.gtag = gtag;
 
-        gtag('config', 'G-HJSDMZLT70', {
-          send_page_view: true
-        });
-      `}
-    </Script>
-  </body>
-</html>
-```
+            gtag('js', new Date());
 
-);
-      }
+            gtag('config', 'G-HJSDMZLT70', {
+              send_page_view: true
+            });
+          `}
+        </Script>
+      </body>
+    </html>
+  );
+}
