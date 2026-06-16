@@ -15,6 +15,11 @@ import {
   ArrowRight,
   CircleCheck as CheckCircle
 } from 'lucide-react';
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
 
 const ALL = 'All';
 
@@ -22,6 +27,14 @@ const ALL = 'All';
 const WHATSAPP_NUMBER = '919059783619';
 
 function openWhatsApp(jobTitle: string) {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'job_application_click', {
+      event_category: 'career',
+      event_label: jobTitle,
+      value: 1,
+    });
+  }
+
   const message = encodeURIComponent(
     `Hi Clarion Talent, I am interested in applying for ${jobTitle}.`
   );
@@ -143,7 +156,16 @@ function JobCard({ job }: { job: Job }) {
 
         <div className="flex items-center justify-between mt-5 pt-4 border-t border-slate-100">
           <button
-            onClick={() => setExpanded(!expanded)}
+            onClick={() => {
+  if (!expanded) {
+    window.gtag?.('event', 'job_view_details', {
+      event_category: 'engagement',
+      event_label: job.title,
+    });
+  }
+
+  setExpanded(!expanded);
+}}
             className="flex items-center gap-1.5 text-sm text-brand-600 font-medium hover:text-orange-500 transition-colors duration-200"
           >
             {expanded ? 'Show Less' : 'View Details'}

@@ -8,9 +8,14 @@ import {
   MapPin,
   MessageCircle,
   Instagram,
-  Building2,
-  ArrowRight
+  Building2
 } from 'lucide-react';
+
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
 
 const WHATSAPP_NUMBER = '919059783619'; // update if needed
 
@@ -47,11 +52,19 @@ export default function ContactPage() {
   ];
 
   const openWhatsApp = (message: string) => {
-    window.open(
-      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
-      '_blank'
-    );
-  };
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'contact_whatsapp_click', {
+      event_category: 'lead',
+      event_label: 'Contact Page WhatsApp',
+      value: 1,
+    });
+  }
+
+  window.open(
+    `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
+    '_blank'
+  );
+};
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -118,7 +131,19 @@ export default function ContactPage() {
             );
 
             return card.href ? (
-              <a key={card.label} href={card.href}>
+              <a
+  key={card.label}
+  href={card.href}
+  onClick={() => {
+    if (card.label === 'Phone') {
+      window.gtag?.('event', 'phone_card_click');
+    }
+
+    if (card.label === 'Email') {
+      window.gtag?.('event', 'email_card_click');
+    }
+  }}
+>
                 {content}
               </a>
             ) : (
@@ -188,11 +213,17 @@ export default function ContactPage() {
                 </button>
 
                 <a
-                  href="https://www.instagram.com/clariontf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:bg-pink-50"
-                >
+  href="https://www.instagram.com/clariontf"
+  target="_blank"
+  rel="noopener noreferrer"
+  onClick={() => {
+    window.gtag?.('event', 'instagram_click', {
+      event_category: 'engagement',
+      event_label: 'Instagram Profile',
+    });
+  }}
+  className="flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:bg-pink-50"
+>
                   <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-pink-100">
                     <Instagram size={18} className="text-pink-600" />
                   </div>
@@ -235,10 +266,16 @@ export default function ContactPage() {
                   Chat on WhatsApp
                 </button>
 
-                <a
-                  href="tel:+919059783619"
-                  className="w-full flex justify-center items-center gap-2 font-semibold py-4 rounded-lg border border-slate-200 hover:bg-slate-50 transition"
-                >
+               <a
+  href="tel:+919059783619"
+  onClick={() => {
+    window.gtag?.('event', 'phone_call_click', {
+      event_category: 'lead',
+      event_label: 'Contact Page Phone',
+    });
+  }}
+  className="w-full flex justify-center items-center gap-2 font-semibold py-4 rounded-lg border border-slate-200 hover:bg-slate-50 transition"
+>
                   <Phone size={18} />
                   Call Us Now
                 </a>
