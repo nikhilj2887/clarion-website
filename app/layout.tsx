@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { Suspense } from 'react';
 import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import GoogleAnalytics from '@/components/googleAnalytics';
 
@@ -93,7 +94,9 @@ export default function RootLayout({
       </head>
 
       <body>
-        <GoogleAnalytics />
+        <Suspense fallback={null}>
+    <GoogleAnalytics />
+  </Suspense>
 
         {children}
 
