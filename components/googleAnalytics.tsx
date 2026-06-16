@@ -3,11 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-declare global {
-  interface Window {
-    gtag: (...args: any[]) => void;
-  }
-}
+
 
 export default function GoogleAnalytics() {
   const pathname = usePathname();

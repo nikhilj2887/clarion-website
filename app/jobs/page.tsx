@@ -15,11 +15,7 @@ import {
   ArrowRight,
   CircleCheck as CheckCircle
 } from 'lucide-react';
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
+
 
 const ALL = 'All';
 

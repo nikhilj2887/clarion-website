@@ -11,11 +11,6 @@ import {
   Building2
 } from 'lucide-react';
 
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
 
 const WHATSAPP_NUMBER = '919059783619'; // update if needed
 

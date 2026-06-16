@@ -1,10 +1,6 @@
 'use client';
 
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
+
 
 export default function WhatsAppButton() {
   const handleWhatsAppClick = () => {
