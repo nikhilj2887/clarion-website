@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { supabase, type Job } from '@/lib/supabase';
+import type { Job } from '@/lib/supabase';
 import {
   MapPin,
   Briefcase,
@@ -197,16 +197,10 @@ export default function JobsPage() {
   const [activeDept, setActiveDept] = useState(ALL);
 
   useEffect(() => {
-    supabase
-      .from('jobs')
-      .select('*')
-      .eq('is_active', true)
-      .order('is_featured', { ascending: false })
-      .order('created_at', { ascending: false })
-      .then(({ data }) => {
-        setJobs(data || []);
-        setLoading(false);
-      });
+    fetch('/api/jobs').then(async (response) => {
+      if (!response.ok) throw new Error('Unable to load jobs');
+      return response.json();
+    }).then(({ jobs }) => setJobs(jobs)).catch(console.error).finally(() => setLoading(false));
   }, []);
 
   const types = [ALL, ...Array.from(new Set(jobs.map((j) => j.type)))];
