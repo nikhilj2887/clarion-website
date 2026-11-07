@@ -12,6 +12,12 @@ const AUDIENCE = `//iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/glob
 
 async function accessToken(): Promise<string> {
   const oidcToken = await getVercelOidcToken();
+  // Log only identity metadata; never log the signed JWT or access tokens.
+  const claims = JSON.parse(Buffer.from(oidcToken.split('.')[1], 'base64url').toString('utf8')) as {
+    sub?: string;
+    iss?: string;
+    aud?: string | string[];
+  };
   const sts = await fetch('https://sts.googleapis.com/v1/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -27,6 +33,7 @@ async function accessToken(): Promise<string> {
   });
  if (!sts.ok) {
   const details = await sts.text();
+  console.error('Vercel OIDC identity rejected by Google', { subject: claims.sub, issuer: claims.iss, audience: claims.aud });
   throw new Error(
     `Google STS token exchange failed: ${sts.status} - ${details.slice(0, 1500)}`
   );
