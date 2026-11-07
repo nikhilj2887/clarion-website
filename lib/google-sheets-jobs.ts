@@ -25,7 +25,12 @@ async function accessToken(): Promise<string> {
     }),
     cache: 'no-store',
   });
-  if (!sts.ok) throw new Error(`Google STS token exchange failed: ${sts.status}`);
+ if (!sts.ok) {
+  const details = await sts.text();
+  throw new Error(
+    `Google STS token exchange failed: ${sts.status} - ${details.slice(0, 1500)}`
+  );
+}
   const federated = await sts.json();
   const impersonation = await fetch(`https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${SERVICE_ACCOUNT}:generateAccessToken`, {
     method: 'POST',
