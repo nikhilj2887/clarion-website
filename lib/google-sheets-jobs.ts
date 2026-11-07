@@ -1,38 +1,41 @@
 import 'server-only';
-import { createSign } from 'node:crypto';
+import { getVercelOidcToken } from '@vercel/oidc';
 import type { Job } from '@/lib/supabase';
 
 const SHEET_ID = '1ltvLBZ8ynTcJdKZzVXWKksJVFEQgpae0hi-bligidHg';
 const RANGE = "'jobs'!A:L";
-
-function base64url(value: string) {
-  return Buffer.from(value).toString('base64url');
-}
+const PROJECT_NUMBER = '712207849749';
+const POOL_ID = 'clarion-vercel-pool';
+const PROVIDER_ID = 'clarion-vercel-oidc';
+const SERVICE_ACCOUNT = 'clarion-jobs-reader@clarion-514008.iam.gserviceaccount.com';
+const AUDIENCE = `//iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${POOL_ID}/providers/${PROVIDER_ID}`;
 
 async function accessToken(): Promise<string> {
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const key = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, '\n');
-  if (!email || !key) throw new Error('Google Sheets service account credentials are not configured');
-  const now = Math.floor(Date.now() / 1000);
-  const header = base64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
-  const claims = base64url(JSON.stringify({
-    iss: email, scope: 'https://www.googleapis.com/auth/spreadsheets.readonly',
-    aud: 'https://oauth2.googleapis.com/token', iat: now, exp: now + 3600,
-  }));
-  const unsigned = `${header}.${claims}`;
-  const signer = createSign('RSA-SHA256');
-  signer.update(unsigned);
-  signer.end();
-  const assertion = `${unsigned}.${signer.sign(key).toString('base64url')}`;
-  const response = await fetch('https://oauth2.googleapis.com/token', {
+  const oidcToken = await getVercelOidcToken();
+  const sts = await fetch('https://sts.googleapis.com/v1/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion }),
+    body: new URLSearchParams({
+      audience: AUDIENCE,
+      grant_type: 'urn:ietf:params:oauth:grant-type:token-exchange',
+      requested_token_type: 'urn:ietf:params:oauth:token-type:access_token',
+      subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
+      subject_token: oidcToken,
+      scope: 'https://www.googleapis.com/auth/spreadsheets.readonly',
+    }),
     cache: 'no-store',
   });
-  if (!response.ok) throw new Error(`Google OAuth failed: ${response.status}`);
-  const json = await response.json();
-  return json.access_token;
+  if (!sts.ok) throw new Error(`Google STS token exchange failed: ${sts.status}`);
+  const federated = await sts.json();
+  const impersonation = await fetch(`https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${SERVICE_ACCOUNT}:generateAccessToken`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${federated.access_token}` },
+    body: JSON.stringify({ scope: ['https://www.googleapis.com/auth/spreadsheets.readonly'], lifetime: '3600s' }),
+    cache: 'no-store',
+  });
+  if (!impersonation.ok) throw new Error(`Google service account impersonation failed: ${impersonation.status}`);
+  const credentials = await impersonation.json();
+  return credentials.accessToken;
 }
 
 function normalize(value: string) {
