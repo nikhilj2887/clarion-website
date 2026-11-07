@@ -3,7 +3,7 @@ import { createSign } from 'node:crypto';
 import type { Job } from '@/lib/supabase';
 
 const SHEET_ID = '1ltvLBZ8ynTcJdKZzVXWKksJVFEQgpae0hi-bligidHg';
-const RANGE = "'jobs'!A:J";
+const RANGE = "'jobs'!A:L";
 
 function base64url(value: string) {
   return Buffer.from(value).toString('base64url');
