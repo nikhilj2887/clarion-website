@@ -27,7 +27,8 @@ async function accessToken(): Promise<string> {
       requested_token_type: 'urn:ietf:params:oauth:token-type:access_token',
       subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
       subject_token: oidcToken,
-      scope: 'https://www.googleapis.com/auth/spreadsheets.readonly',
+      // The federated token calls IAM Credentials; the impersonated token below is Sheets-readonly.
+      scope: 'https://www.googleapis.com/auth/cloud-platform',
     }),
     cache: 'no-store',
   });
