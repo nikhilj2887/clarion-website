@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { MapPin, Briefcase, Clock,  ArrowRight, Building2 } from 'lucide-react';
-import { supabase, type Job } from '@/lib/supabase';
+import type { Job } from '@/lib/supabase';
 
 function JobCard({ job }: { job: Job }) {
   return (
@@ -59,8 +59,12 @@ export default function FeaturedJobs() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.from('jobs').select('*').eq('is_featured', true).eq('is_active', true).order('created_at', { ascending: false }).limit(3)
-      .then(({ data }) => { setJobs(data || []); setLoading(false); });
+    fetch('/api/jobs').then(async (response) => {
+      if (!response.ok) throw new Error('Unable to load featured jobs');
+      return response.json();
+    }).then(({ jobs }: { jobs: Job[] }) => {
+      setJobs(jobs.filter(job => job.is_featured).slice(0, 3));
+    }).catch(console.error).finally(() => setLoading(false));
   }, []);
 
   return (
