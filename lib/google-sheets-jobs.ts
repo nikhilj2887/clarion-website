@@ -45,7 +45,23 @@ async function accessToken(): Promise<string> {
     body: JSON.stringify({ scope: ['https://www.googleapis.com/auth/spreadsheets.readonly'], lifetime: '3600s' }),
     cache: 'no-store',
   });
-  if (!impersonation.ok) throw new Error(`Google service account impersonation failed: ${impersonation.status}`);
+  if (!impersonation.ok) {
+    const raw = await impersonation.text();
+    // Google error payloads are not credentials; only emit the structured error
+    // code/status/message, never the OIDC JWT or either access token.
+    let reason = 'No structured error details returned';
+    try {
+      const parsed = JSON.parse(raw) as {
+        error?: { code?: number; status?: string; message?: string; details?: Array<{ reason?: string }> };
+      };
+      const error = parsed.error;
+      reason = [error?.status, error?.message, error?.details?.map(item => item.reason).filter(Boolean).join(', ')]
+        .filter(Boolean).join(' | ') || reason;
+    } catch {
+      reason = 'Google returned a non-JSON error response';
+    }
+    throw new Error(`Google service account impersonation failed: ${impersonation.status} - ${reason.slice(0, 1200)}`);
+  }
   const credentials = await impersonation.json();
   return credentials.accessToken;
 }
