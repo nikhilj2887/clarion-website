@@ -119,13 +119,46 @@ function JobCard({ job }: { job: Job }) {
           </div>
         )}
 
-        <p
-          className={`text-sm text-slate-600 leading-relaxed ${
-            expanded ? '' : 'line-clamp-3'
-          }`}
-        >
-          {job.description}
-        </p>
+        {expanded ? (
+          <div className="space-y-4 text-sm text-slate-600 leading-relaxed">
+            {job.description
+              .replace(/\\r\\n|\\n|\\r/g, '\n')
+              .replace(/\r\n?/g, '\n')
+              .split(/\n+/)
+              .flatMap((line) => line.split(/\s+-\s+(?=[A-Z])/))
+              .map((line) => line.trim().replace(/^[-•*]\s*/, ''))
+              .filter(Boolean)
+              .reduce<{ heading: string | null; items: string[] }[]>((sections, line) => {
+                const headingMatch = line.match(/^(Key Responsibilities|Responsibilities|Required Skills|Skills Required|Requirements|Qualifications)\s*:\s*(.*)$/i);
+                if (headingMatch) {
+                  sections.push({ heading: headingMatch[1], items: headingMatch[2] ? [headingMatch[2]] : [] });
+                } else if (sections.length) {
+                  sections[sections.length - 1].items.push(line);
+                } else {
+                  sections.push({ heading: null, items: [line] });
+                }
+                return sections;
+              }, [])
+              .map((section, sectionIndex) => (
+                <section key={sectionIndex}>
+                  {section.heading && (
+                    <h4 className="mb-2 font-semibold text-slate-800">{section.heading}</h4>
+                  )}
+                  {section.heading || section.items.length > 1 ? (
+                    <ul className="list-disc space-y-2 pl-5">
+                      {section.items.map((item, index) => <li key={index}>{item}</li>)}
+                    </ul>
+                  ) : (
+                    <p>{section.items[0]}</p>
+                  )}
+                </section>
+              ))}
+          </div>
+        ) : (
+          <p className="line-clamp-3 text-sm text-slate-600 leading-relaxed">
+            {job.description}
+          </p>
+        )}
 
         {expanded && job.requirements?.length > 0 && (
           <div className="mt-4">
